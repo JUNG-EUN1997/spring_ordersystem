@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 @Service
 public class MemberService {
     private final MemberRepository memberRepository;
@@ -18,7 +19,6 @@ public class MemberService {
         this.memberRepository = memberRepository;
     }
 
-    @Transactional
     public Member memberCreate(MemberSaveReqDto dto){
         if(memberRepository.findByEmail(dto.getEmail()).isPresent()){
             throw new IllegalArgumentException("이미 존재하는 email 입니다.");
