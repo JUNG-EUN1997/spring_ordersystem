@@ -1,5 +1,7 @@
-package beyondProjectForOrdersystem.member.domain;
+package beyondProjectForOrdersystem.member.dto;
 
+import beyondProjectForOrdersystem.common.domain.Address;
+import beyondProjectForOrdersystem.member.domain.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,12 +13,10 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class MemberListResDto {
+public class MemberResDto {
     private Long id;
     private String name;
     private String email;
-    private String city;
-    private Role role;
-    private LocalDateTime createdTime;
+    private Address address;
 
 }

@@ -1,6 +1,8 @@
 package beyondProjectForOrdersystem.member.domain;
 
+import beyondProjectForOrdersystem.common.domain.Address;
 import beyondProjectForOrdersystem.common.domain.BaseTimeEntity;
+import beyondProjectForOrdersystem.member.dto.MemberResDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,21 +25,20 @@ public class Member extends BaseTimeEntity {
     private String email;
     @Column(nullable = false)
     private String password;
-    private String city;
-    private String street;
-    private String zipcode;
     @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
+
+    @Enumerated(EnumType.STRING) // 해당 어노테이션 사용하지 않으면 숫자로 들어감
     private Role role;
 
-    public MemberListResDto listFromEntity(){
-        return MemberListResDto.builder()
+    @Embedded // @Embeddable 선언한 객체를 사용하겠다는 어노테이션
+    private Address address;
+
+    public MemberResDto fromEntity(){
+        return MemberResDto.builder()
                 .id(this.id)
                 .name(this.name)
                 .email(this.email)
-                .city(this.city)
-                .role(this.role)
-                .createdTime(this.getCreatedTime())
+                .address(this.address)
                 .build();
     }
 

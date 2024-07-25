@@ -20,6 +20,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 //	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+
+//	dto값 검증 어노테이션 제공을 위한 의존성 추가 : 240725
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
 	annotationProcessor 'org.projectlombok:lombok'
