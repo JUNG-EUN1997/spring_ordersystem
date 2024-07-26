@@ -65,6 +65,14 @@ public class OrderingService {
         for (OrderSaveReqDto.OrderDetailDto saveProduct : dto.getOrderDetailDtoList()) {
             Product product = productRepository.findById(saveProduct.getProductId())
                     .orElseThrow(()-> new EntityNotFoundException("없는 상품 입니다."));
+
+            if(product.getStockQuantity() < saveProduct.getProductCount()){
+                throw new IllegalArgumentException("재고가 부족합니다.");
+            }
+
+            product.updateStockQuantity("minus",saveProduct.getProductCount());
+            //변경감지(dirty checking) 으로 save 불필요
+
             OrderDetail orderDetail = OrderDetail.builder()
                     .quantity(saveProduct.getProductCount())
                     .product(product)

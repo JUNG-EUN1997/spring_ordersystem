@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Objects;
 import java.util.Stack;
 
 @Builder
@@ -41,6 +42,17 @@ public class Product extends BaseTimeEntity {
 
     public void updateImagePath(String imagePath){
         this.imagePath = imagePath;
+    }
+
+    public void updateStockQuantity(String type, Integer stockQuantity){
+        if(Objects.equals(type, "minus")){
+            this.stockQuantity -= stockQuantity;
+            if(this.stockQuantity < 0){
+                throw new IllegalArgumentException("재고가 부족합니다.");
+            }
+        }else{
+            this.stockQuantity += stockQuantity;
+        }
     }
 
 }
