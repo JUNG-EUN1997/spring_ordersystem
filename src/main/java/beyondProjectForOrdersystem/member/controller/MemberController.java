@@ -1,10 +1,13 @@
 package beyondProjectForOrdersystem.member.controller;
 
+import beyondProjectForOrdersystem.common.auth.JwtTokenProvider;
 import beyondProjectForOrdersystem.common.dto.CommonResDto;
 import beyondProjectForOrdersystem.member.domain.Member;
+import beyondProjectForOrdersystem.member.dto.MemberLoginDto;
 import beyondProjectForOrdersystem.member.dto.MemberResDto;
 import beyondProjectForOrdersystem.member.dto.MemberSaveReqDto;
 import beyondProjectForOrdersystem.member.service.MemberService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -14,14 +17,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
 
 //@Controller
 @RestController
 public class MemberController {
     private final MemberService memberService;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    public MemberController(MemberService memberService) {
+    @Autowired
+    public MemberController(MemberService memberService, JwtTokenProvider jwtTokenProvider) {
         this.memberService = memberService;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
 
@@ -42,5 +50,24 @@ public class MemberController {
         CommonResDto commonResDto = new CommonResDto(HttpStatus.OK,
                 "member are found", memberListResDtos);
         return new ResponseEntity<>(commonResDto, HttpStatus.OK);
+    }
+
+    @PostMapping("/doLogin")
+    public ResponseEntity<?> doLogin(@RequestBody MemberLoginDto dto){
+//        email, password가 일치한지 검증
+        Member member = memberService.login(dto);
+
+//        일치할경우 accessToken 생성 (accessToken = JWT Token)
+        String jwtToken = jwtTokenProvider.createToken(member.getEmail(), member.getRole().toString());
+
+
+//        생성된 토큰을 CommonResDto에 담아 사용자에게 return
+        Map<String,Object> loginInfo = new HashMap<>();
+        loginInfo.put("id",member.getId());
+        loginInfo.put("token",jwtToken);
+
+        CommonResDto commonResDto = new CommonResDto(HttpStatus.OK,"login is successful",loginInfo);
+        return new ResponseEntity<>(commonResDto, HttpStatus.OK);
+
     }
 }

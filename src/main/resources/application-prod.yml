@@ -22,7 +22,9 @@ spring:
     hibernate:
       ddl-auto: create
     show_sql: true
-
 logging:
   level:
     root: info
+jwt:
+  expiration: 30
+  secretKey: my_token_secret #변수화한 tokenKey 값

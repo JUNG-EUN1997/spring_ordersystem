@@ -27,11 +27,11 @@ public class MemberSaveReqDto {
 //    private String zipcode;
     private Address address; // 엔티티가 아님 + oneToMany 가 아니어서 순환참조가 아님!
 
-    public Member toEntity(){
+    public Member toEntity(String password){
         return Member.builder()
                 .name(this.name)
                 .email(this.email)
-                .password(this.password)
+                .password(password)
                 .role(Role.USER)
                 .address(address)
                 .build();
