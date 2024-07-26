@@ -25,10 +25,11 @@ public class Member extends BaseTimeEntity {
     private String email;
     @Column(nullable = false)
     private String password;
-    @Column(nullable = false)
 
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING) // 해당 어노테이션 사용하지 않으면 숫자로 들어감
-    private Role role;
+    @Builder.Default
+    private Role role = Role.USER;
 
     @Embedded // @Embeddable 선언한 객체를 사용하겠다는 어노테이션
     private Address address;

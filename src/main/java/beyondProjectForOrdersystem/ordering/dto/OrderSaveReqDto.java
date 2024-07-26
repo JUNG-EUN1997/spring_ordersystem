@@ -28,4 +28,10 @@ public class OrderSaveReqDto {
         private Integer productCount;
     }
 
+    public Ordering toEntity(Member member){
+        return Ordering.builder()
+                .member(member)
+                .build();
+    }
+
 }
