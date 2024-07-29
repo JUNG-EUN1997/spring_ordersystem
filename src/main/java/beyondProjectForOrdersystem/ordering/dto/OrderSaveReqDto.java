@@ -16,17 +16,20 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderSaveReqDto {
-    private Long memberId;
-    private List<OrderSaveReqDto.OrderDetailDto> orderDetailDtoList;
+    private Long productId;
+    private Integer productCount;
 
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Builder
-    public static class OrderDetailDto{
-        private Long productId;
-        private Integer productCount;
-    }
+//    private Long memberId;
+//    private List<OrderSaveReqDto.OrderDetailDto> orderDetailDtoList;
+
+//    @Data
+//    @AllArgsConstructor
+//    @NoArgsConstructor
+//    @Builder
+//    public static class OrderDetailDto{
+//        private Long productId;
+//        private Integer productCount;
+//    }
 
     public Ordering toEntity(Member member){
         return Ordering.builder()

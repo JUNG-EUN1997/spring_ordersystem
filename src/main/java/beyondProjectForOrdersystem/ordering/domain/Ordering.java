@@ -62,4 +62,9 @@ public class Ordering extends BaseTimeEntity {
 
         return orderListResDto;
     }
+
+    public void updateOrderStatus(OrderStatus status){
+        this.orderStatus = status;
+    }
+
 }

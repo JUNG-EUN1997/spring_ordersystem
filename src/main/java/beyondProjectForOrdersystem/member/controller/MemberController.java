@@ -14,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -41,6 +42,10 @@ public class MemberController {
         return new ResponseEntity<>(commonResDto, HttpStatus.CREATED);
     }
 
+
+//    어드민만 가능하다는 표시 >> ... SimpleGrantedAuthority("ROLE_"+claims.get("role"))); 부분에 "Role_" 이게 있어야 작동한다
+//    admin만 회원목록 전체조회 가능
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/member/list")
     public ResponseEntity<?> memberList(
             @PageableDefault(page = 0, size=10, sort = "createdTime", direction = Sort.Direction.DESC )
@@ -51,6 +56,16 @@ public class MemberController {
                 "member are found", memberListResDtos);
         return new ResponseEntity<>(commonResDto, HttpStatus.OK);
     }
+
+//    마이페이지 : 본인은 본인정보만 조회 가능
+    @GetMapping("/member/myinfo")
+    public ResponseEntity<?> memberMyinfo(){
+
+        MemberResDto memberResDto = memberService.memberMyinfo();
+        CommonResDto commonResDto = new CommonResDto(HttpStatus.OK, "member are found", memberResDto);
+        return new ResponseEntity<>(commonResDto, HttpStatus.OK);
+    }
+
 
     @PostMapping("/doLogin")
     public ResponseEntity<?> doLogin(@RequestBody MemberLoginDto dto){

@@ -53,7 +53,7 @@ public class JwtAuthFilter extends GenericFilter {
                 List<GrantedAuthority> authorities = new ArrayList<>(); // 유저의 권한을 불러오기 위한 객체
 //            User 권한이 1개 이상일 수 있기 때문에 List 형태로 불러온다.
 
-                authorities.add(new SimpleGrantedAuthority("Role_"+claims.get("role")));
+                authorities.add(new SimpleGrantedAuthority("ROLE_"+claims.get("role")));
                 UserDetails userDetails = new User(claims.getSubject(),"", authorities);
 
                 Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails,"",userDetails.getAuthorities());

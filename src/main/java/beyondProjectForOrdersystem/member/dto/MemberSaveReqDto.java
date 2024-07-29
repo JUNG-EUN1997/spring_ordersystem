@@ -27,12 +27,15 @@ public class MemberSaveReqDto {
 //    private String zipcode;
     private Address address; // 엔티티가 아님 + oneToMany 가 아니어서 순환참조가 아님!
 
+    @Builder.Default
+    private Role role = Role.USER;;
+
     public Member toEntity(String password){
         return Member.builder()
                 .name(this.name)
                 .email(this.email)
                 .password(password)
-                .role(Role.USER)
+                .role(this.role)
                 .address(address)
                 .build();
     }

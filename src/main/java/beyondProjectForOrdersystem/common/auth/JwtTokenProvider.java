@@ -20,6 +20,8 @@ public class JwtTokenProvider {
     public String createToken(String email, String role){
 //        Claims는 사용자 정보이자 페이로드 정보
         Claims claims = Jwts.claims().setSubject(email);
+//        setSubject :: 세팅하고자 하는 주요한 값을 넣기
+
         claims.put("role",role);
         Date now = new Date();
         String token = Jwts.builder()
