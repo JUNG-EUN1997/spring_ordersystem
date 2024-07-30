@@ -47,4 +47,31 @@ public class RedisConfig { // DB는 총 16개 존재
 //    redisTemplate.opsForValue().set(key, value)
 //    redisTemplate.opsForValue().get(key)
 //    redisTemplate.opsForValue().increment 또는 decrement
+
+    
+    
+    
+//    product 재고감소를 위한 redis DB 세팅
+    @Bean
+    @Qualifier("3")
+    public RedisConnectionFactory redisStockFactory() {
+        RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration();
+        configuration.setHostName(host);
+        configuration.setPort(port);
+        configuration.setDatabase(2); // 2번 DB 사용
+        return new LettuceConnectionFactory(configuration);
+    }
+    
+    @Bean
+    @Qualifier("3")
+    public RedisTemplate<String, Object> redisStockTemplate(@Qualifier("3") RedisConnectionFactory redisConnectionFactory) {
+        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+        redisTemplate.setConnectionFactory(redisConnectionFactory);
+        return redisTemplate;
+    }
+    
+    
+    
 }

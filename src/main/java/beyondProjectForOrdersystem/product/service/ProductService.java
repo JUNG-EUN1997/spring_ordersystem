@@ -1,5 +1,6 @@
 package beyondProjectForOrdersystem.product.service;
 
+import beyondProjectForOrdersystem.common.service.StockInventoryService;
 import beyondProjectForOrdersystem.product.domain.Product;
 import beyondProjectForOrdersystem.product.dto.ProductResDto;
 import beyondProjectForOrdersystem.product.dto.ProductSaveReqDto;
@@ -31,11 +32,13 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     private final S3Client s3Client;
+    private final StockInventoryService stockInventoryService;
 
     @Autowired
-    public ProductService(ProductRepository productRepository, S3Client s3Client) {
+    public ProductService(ProductRepository productRepository, S3Client s3Client, StockInventoryService stockInventoryService) {
         this.productRepository = productRepository;
         this.s3Client = s3Client;
+        this.stockInventoryService = stockInventoryService;
     }
 
     public Product productCreate(ProductSaveReqDto dto){
@@ -50,6 +53,10 @@ public class ProductService {
 
             product.updateImagePath(path.toString());
 
+//            상품 등록 시, redis에 등록 여부 체그
+            if(dto.getName().contains("sale")){
+                stockInventoryService.increaseStock(product.getId(),dto.getStockQuantity());
+            }
         }catch (IOException e){
             throw new RuntimeException("이미지 저장 실패");
         }
