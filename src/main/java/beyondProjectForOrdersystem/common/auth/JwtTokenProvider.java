@@ -10,11 +10,19 @@ import java.util.Date;
 
 @Component
 public class JwtTokenProvider {
+//    at용
     @Value("${jwt.secretKey}")
     private String secretKey;
 
     @Value("${jwt.expiration}")
     private int expiration;
+
+//    rt용
+    @Value("${jwt.secretKeyRt}")
+    private String secretKeyRt;
+
+    @Value("${jwt.expirationRt}")
+    private int expirationRt;
 
 
     public String createToken(String email, String role){
@@ -34,4 +42,21 @@ public class JwtTokenProvider {
                 .compact();
         return token;
     }
+
+
+    public String createRefreshToken(String email, String role){
+        Claims claims = Jwts.claims().setSubject(email);
+
+        claims.put("role",role);
+        Date now = new Date();
+        String token = Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(now)
+                .setExpiration(new Date(now.getTime() + expiration*60*1000L))
+                .signWith(SignatureAlgorithm.HS256, secretKeyRt)
+                .compact();
+        return token;
+    }
+
+
 }

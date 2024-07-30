@@ -31,7 +31,7 @@ public class SecurityConfigs {
                 .authorizeRequests()
 
                     // (antMatchers) 예외 url 넣기 : 로그인하지 않아도 들어갈 수 있는
-                    .antMatchers("/member/create", "/", "/doLogin")
+                    .antMatchers("/member/create", "/", "/doLogin","/refresh-token")
                     .permitAll()
                 .anyRequest().authenticated()
                 .and()
