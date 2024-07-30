@@ -44,6 +44,28 @@ public class ProductService {
         return product;
     }
 
+//    aws s3 버킷에 파일을 넣을 것 인데, 업로드를 위한 권한을 어떻게 줄 것인가?
+//          1) id + pw  > 권한이 너무 많아서 X
+//          2) s3에 권한이 있는 특정 계정 생성함
+    public Product productAwsCreate(ProductSaveReqDto dto){
+        MultipartFile image = dto.getProductImage();
+        Product product;
+        try{
+            product = productRepository.save(dto.toEntity());
+            byte[] bytes = image.getBytes();
+            Path path = Paths.get("C:/Users/rro06/OneDrive/Desktop/tmp/"
+                    , product.getId() + "_" + image.getOriginalFilename());
+            Files.write(path,bytes, StandardOpenOption.CREATE, StandardOpenOption.WRITE);
+
+            product.updateImagePath(path.toString());
+
+        }catch (IOException e){
+            throw new RuntimeException("이미지 저장 실패");
+        }
+        return product;
+    }
+
+
     public Page<ProductResDto> productList(Pageable pageable){
         Page<Product> listProduct = productRepository.findAll(pageable);
         Page<ProductResDto> productResDtoPage = listProduct.map(a->a.fromEntity());
