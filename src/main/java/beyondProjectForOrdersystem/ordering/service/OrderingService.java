@@ -4,6 +4,7 @@ import beyondProjectForOrdersystem.common.service.StockInventoryService;
 import beyondProjectForOrdersystem.member.domain.Member;
 import beyondProjectForOrdersystem.member.dto.StockDecreaseEvent;
 import beyondProjectForOrdersystem.member.repository.MemberRepository;
+import beyondProjectForOrdersystem.ordering.controller.SseController;
 import beyondProjectForOrdersystem.ordering.domain.OrderDetail;
 import beyondProjectForOrdersystem.ordering.domain.OrderStatus;
 import beyondProjectForOrdersystem.ordering.domain.Ordering;
@@ -32,14 +33,16 @@ public class OrderingService {
     private final ProductRepository productRepository;
     private final StockInventoryService stockInventoryService;
     private final StockDecreaseEventHandler stockDecreaseEventHandler;
+    private final SseController sseController;
 
-    public OrderingService(OrderingRepository orderingRepository, OrderDetailRepository orderDetailRepository, MemberRepository memberRepository, ProductRepository productRepository, StockInventoryService stockInventoryService, StockDecreaseEventHandler stockDecreaseEventHandler) {
+    public OrderingService(OrderingRepository orderingRepository, OrderDetailRepository orderDetailRepository, MemberRepository memberRepository, ProductRepository productRepository, StockInventoryService stockInventoryService, StockDecreaseEventHandler stockDecreaseEventHandler, SseController sseController) {
         this.orderingRepository = orderingRepository;
         this.orderDetailRepository = orderDetailRepository;
         this.memberRepository = memberRepository;
         this.productRepository = productRepository;
         this.stockInventoryService = stockInventoryService;
         this.stockDecreaseEventHandler = stockDecreaseEventHandler;
+        this.sseController = sseController;
     }
 
 /*
@@ -137,6 +140,10 @@ public class OrderingService {
         }
 
         Ordering savedOrdering = orderingRepository.save(ordering);
+
+//        sse 알림용 코드 추가
+        sseController.publicsMessage(savedOrdering.fromEntity(), "admin@test.com");
+
         return savedOrdering;
     }
 
