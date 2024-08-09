@@ -1,5 +1,7 @@
 package beyondProjectForOrdersystem.common.configs;
 
+import beyondProjectForOrdersystem.ordering.controller.SseController;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -8,7 +10,10 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.listener.RedisMessageListenerContainer;
+import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
@@ -64,14 +69,59 @@ public class RedisConfig { // DB는 총 16개 존재
     
     @Bean
     @Qualifier("3")
-    public RedisTemplate<String, Object> redisStockTemplate(@Qualifier("3") RedisConnectionFactory redisConnectionFactory) {
+    public RedisTemplate<String, Object> redisStockTemplate(@Qualifier("3") RedisConnectionFactory redisStockFactory) {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
-        redisTemplate.setConnectionFactory(redisConnectionFactory);
+        redisTemplate.setConnectionFactory(redisStockFactory);
         return redisTemplate;
     }
-    
-    
-    
+
+    @Bean
+    @Qualifier("4")
+    public RedisConnectionFactory redisSseFactory() {
+        RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration();
+        configuration.setHostName(host);
+        configuration.setPort(port);
+        configuration.setDatabase(3); // 3번 DB 사용
+        return new LettuceConnectionFactory(configuration);
+    }
+
+    @Bean
+    @Qualifier("4")
+    public RedisTemplate<String, Object> redisSseTemplate(@Qualifier("4") RedisConnectionFactory redisSseFactory) {
+        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+
+//        보내는 객체 내부에 또다른 객체가 존재하여 직렬화 이슈 발생
+//          따라서 아래와 같이 serializer 커스텀 진행
+        Jackson2JsonRedisSerializer<Object> serializer = new Jackson2JsonRedisSerializer<>(Object.class);
+        ObjectMapper objectMapper = new ObjectMapper();
+        serializer.setObjectMapper(objectMapper);
+        redisTemplate.setValueSerializer(serializer);
+
+        redisTemplate.setConnectionFactory(redisSseFactory);
+        return redisTemplate;
+    }
+
+    @Bean
+    @Qualifier("4")
+    public RedisMessageListenerContainer redisMessageListenerContainer(@Qualifier("4")
+                                                                           RedisConnectionFactory redisSseFactory){
+        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+        container.setConnectionFactory(redisSseFactory());
+        return container;
+    }
+
+
+//    사용 XXXXXXX!
+//    redis에 메시지 발행 시, MessageListenerAdapter를 통해 listen 하게 되고,
+//          아래 코드를 통해 특정 메서드를 실행하도록 설정
+//    @Bean
+//    public MessageListenerAdapter listenerAdapter(SseController sseController){
+//        return new MessageListenerAdapter(sseController, "onMessage");
+//    }
+
+
+
 }
