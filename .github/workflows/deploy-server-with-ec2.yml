@@ -16,7 +16,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: '11'
-          distiribution: 'temurin'
+          distribution: 'temurin'
 
       - name: build jar
         working-directory: .
