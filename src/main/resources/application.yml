@@ -10,7 +10,7 @@ spring:
     host: localhost
     port: 6379
 
-  # rabbitmq 환경설정
+# rabbitmq 환경설정
 #  rabbitmq:
 #    host: localhost
 #    port: 5672 # rabbitmq 를 생성한 redis의 port
