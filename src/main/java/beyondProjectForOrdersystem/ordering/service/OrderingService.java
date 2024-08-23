@@ -32,16 +32,18 @@ public class OrderingService {
     private final MemberRepository memberRepository;
     private final ProductRepository productRepository;
     private final StockInventoryService stockInventoryService;
-    private final StockDecreaseEventHandler stockDecreaseEventHandler;
+//    private final StockDecreaseEventHandler stockDecreaseEventHandler;
     private final SseController sseController;
 
-    public OrderingService(OrderingRepository orderingRepository, OrderDetailRepository orderDetailRepository, MemberRepository memberRepository, ProductRepository productRepository, StockInventoryService stockInventoryService, StockDecreaseEventHandler stockDecreaseEventHandler, SseController sseController) {
+    public OrderingService(OrderingRepository orderingRepository, OrderDetailRepository orderDetailRepository, MemberRepository memberRepository, ProductRepository productRepository, StockInventoryService stockInventoryService,
+//                           StockDecreaseEventHandler stockDecreaseEventHandler,
+                           SseController sseController) {
         this.orderingRepository = orderingRepository;
         this.orderDetailRepository = orderDetailRepository;
         this.memberRepository = memberRepository;
         this.productRepository = productRepository;
         this.stockInventoryService = stockInventoryService;
-        this.stockDecreaseEventHandler = stockDecreaseEventHandler;
+//        this.stockDecreaseEventHandler = stockDecreaseEventHandler;
         this.sseController = sseController;
     }
 
@@ -119,7 +121,7 @@ public class OrderingService {
                 * - 주문 사이트에서, 구매하려고 할 때는 재고가 있었는데 몇 초차로 없는 경우를 볼 수 있다.
                 *
                 * */
-                stockDecreaseEventHandler.publish(new StockDecreaseEvent(product.getId(), saveProduct.getProductCount()));
+//                stockDecreaseEventHandler.publish(new StockDecreaseEvent(product.getId(), saveProduct.getProductCount()));
 
             }else{
                 if(product.getStockQuantity() < saveProduct.getProductCount()){
