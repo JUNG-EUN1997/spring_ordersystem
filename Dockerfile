@@ -15,7 +15,7 @@ COPY build.gradle .
 COPY settings.gradle .
 
 # 궝한이 없다면 아래 주석 해제
-# RUN chmod gradlew
+RUN chmod gradlew
 RUN ./gradlew bootJar
 
 
