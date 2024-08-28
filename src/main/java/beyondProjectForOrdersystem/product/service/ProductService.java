@@ -81,7 +81,7 @@ public class ProductService {
             product = productRepository.save(dto.toEntity());
             byte[] bytes = image.getBytes();
             String fileName = product.getId() + "_" + image.getOriginalFilename();
-            Path path = Paths.get("C:/Users/rro06/OneDrive/Desktop/tmp/"
+            Path path = Paths.get("/tmp/"
                     , fileName);
             /*
             * 1. FRONT > BACK 에서 줄 때 AWS에서 BYTE를 바로 올리는 기능을 지원해주지 않음
